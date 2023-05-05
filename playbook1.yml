@@ -1,0 +1,210 @@
+
+---
+ - name: create data in file
+   hosts: ramana
+   tasks:
+   - name: copy the data in file
+     copy: dest=/tmp/nagu content='THIS IS MY PERSONAL DATA'
+
+   - name: backup and modify the file
+     copy: dest=/tmp/nagu content='MY EDITED DATA' backup=yes
+…
+#2)
+---
+ - name: copy the file
+   hosts: ramana
+   tasks:
+   - name: copy the file from server to client
+     copy: src=/etc/fstab dest=/etc/
+
+   - name: copy the file from server to client
+     synchronize: src=/etc/fstab dest=/etc/
+
+   - name: copy the file in client itself
+     copy: src=/etc/fstab dest=/tmp/ remote_src=yes
+
+   - name: copy the file from client to server
+     fetch: src=/etc/fstab dest=/tmp/
+
+   - name: copy the file from client to server
+     fetch: src=/etc/fstab dest=/tmp/fstab flat=yes
+
+   - name: copy the file from client to server
+     fetch: src=/etc/fstab dest=/tmp/{inventory_hostname}_fstab flat=yes
+#3)
+#!/usr/bin/ansible-playbook
+---
+ - name: print the below message
+   hosts: ramana
+   tasks:
+#case1
+   - name: using msg
+     debug: msg='NAGU'
+
+#case2
+   - name: using msg
+     debug:
+      msg: 'NAGU'
+
+#case3
+   - name: using msg
+     debug:
+      msg:
+       - 'NAGU'
+       - 'CHANDU'
+
+#case4
+   - name: using msg
+     debug:
+      msg: 'hostname is {{inventory_hostname}}'
+
+#case5
+   - name: using var
+     debug:
+      var: inventory_hostname
+
+#case6
+   - name: using msg
+     debug:
+      msg:
+          my hostname is {{inventory_hostname}}
+          my ip is {{ansible_facts ['fqdn']}}
+
+#case7
+   - name: using verbosity
+     debug:
+      msg: 'NAGU'
+      verbosity: 3
+
+#case8
+   - name: using register
+     command: uname -a
+     register: kernel
+   - debug:
+      msg: '{{kernel}}'
+#     var: kernel
+
+#case9
+   - name: using register and stdout
+     command: uname -a
+     register: kernel
+   - debug:
+      msg: '{{kernel.stdout}}'
+#     var: kernel.stdout
+
+#case10
+   - name: using tags
+     tags: date
+     command: date
+     register: date
+   - debug:
+      msg: '{{date.stdout}}'
+#     var: date.stdout
+#4)
+---
+ - name: without handlers
+   hosts: ramana
+   tasks:
+   - name: copy file
+     copy: src=/etc/fstab dest=/var/www/html/index.html
+   - name: restart httpd service
+     service: name=httpd state=restarted
+#5)
+---
+ - name: with handlers
+   hosts: ramana
+   tasks:
+   - name: copy file
+     copy: src=/etc/fstab dest=/var/www/html/index.html
+     notify: restart httpd service
+   handlers:
+   - name: restart httpd service
+     service: name=httpd state=restarted
+#6)
+---
+ - name: with handlers and listen
+   hosts: ramana
+   tasks:
+   - name: copy file
+     copy: src=/etc/fstab dest=/var/www/html/index.html
+     notify: restart httpd service
+   handlers:
+   - name: httpd service
+     service: name=httpd state=restarted
+     listen: restart httpd service
+#7)
+---
+ - name: with register and when
+   hosts: ramana
+   tasks:
+   - name: copy file
+     copy: src=/etc/fstab dest=/var/www/html/index.html
+     register: httpd
+   - name: httpd service
+     service: name=httpd state=restarted
+     when: httpd.changed
+#8)
+---
+ - name: with_items
+   hosts: ramana
+   tasks:
+   - service: name={{item}} state=restarted
+with_items:
+      - httpd
+      - sshd
+#9)
+---
+ - name: with loop
+   hosts: ramana
+   tasks:
+   - service: name={{item}} state=restarted
+     loop:
+      - httpd
+      - sshd
+#10)
+---
+ - name: without loop
+   hosts: ramana
+   tasks:
+   - yum:
+      name:
+        - httpd
+        - vsftpd
+      state: present
+#11)
+---
+ - name: create file and add data in file
+   hosts: ramana
+   tasks:
+   - name: create file
+     file: dest=/tmp/nagu state=touch mode=777 owner=nagu group=bat22a
+
+   - name: add data in file
+lineinfile: dest=/tmp/nagu line='THIS IS MY PERSONAL DATA'
+#12)
+---
+ - name: start,restart,stop and permanent the services
+   hosts: ramana
+   tasks:
+   - name: start and permanent the httpd service
+     service: name=httpd state=started enabled=yes
+
+   - name: restart the httpd service
+     service: name=httpd state=restarted
+
+   - name: stop the httpd service
+     service: name=httpd state=stopped enabled=no
+#13)
+---
+ - name: install,update and uninstall packages
+   hosts: ramana
+   tasks:
+   - name: install httpd package
+     yum: name=httpd state=present
+
+   - name: update httpd package
+     yum: name=httpd state=latest
+
+   - name: uninstall httpd package
+     yum: name=httpd state=absent
+     ...
