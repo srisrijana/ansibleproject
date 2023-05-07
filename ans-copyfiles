@@ -1,0 +1,23 @@
+---
+ - name: copy the file
+   hosts: srisri
+   tasks:
+   - name: copy the file from server to client
+     copy: src=/etc/fstab dest=/etc/
+
+   - name: copy the file from server to client
+     synchronize: src=/etc/fstab dest=/etc/
+
+   - name: copy the file in client itself
+     copy: src=/etc/fstab dest=/tmp/ remote_src=yes
+
+   - name: copy the file from client to server
+     fetch: src=/etc/fstab dest=/tmp/
+
+   - name: copy the file from client to server
+     fetch: src=/etc/fstab dest=/tmp/fstab flat=yes
+
+   - name: copy the file from client to server
+     fetch: src=/etc/fstab dest=/tmp/{inventory_hostname}_fstab flat=yes
+
+  ...   
