@@ -1,0 +1,11 @@
+---
+ - name: create data in file
+   hosts: srisri
+   tasks:
+   - name: copy the data in file
+     copy: dest=/tmp/nagu content='THIS IS MY PERSONAL DATA'
+
+   - name: backup and modify the file
+     copy: dest=/tmp/nagu content='MY EDITED DATA' backup=yes
+   
+   ...

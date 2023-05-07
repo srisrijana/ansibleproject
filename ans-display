@@ -1,0 +1,68 @@
+---
+ - name: print the below message
+   hosts: srisri
+   tasks:
+#case1
+   - name: using msg
+     debug: msg='NAGU'
+
+#case2
+   - name: using msg
+     debug:
+      msg: 'NAGU'
+
+#case3
+   - name: using msg
+     debug:
+      msg:
+       - 'NAGU'
+       - 'CHANDU'
+
+#case4
+   - name: using msg
+     debug:
+      msg: 'hostname is {{inventory_hostname}}'
+
+#case5
+   - name: using var
+     debug:
+      var: inventory_hostname
+
+#case6
+   - name: using msg
+     debug:
+      msg:
+          my hostname is {{inventory_hostname}}
+          my ip is {{ansible_facts ['fqdn']}}
+
+#case7
+   - name: using verbosity
+     debug:
+      msg: 'NAGU'
+      verbosity: 3
+
+#case8
+   - name: using register
+     command: uname -a
+     register: kernel
+   - debug:
+      msg: '{{kernel}}'
+#     var: kernel
+
+#case9
+   - name: using register and stdout
+     command: uname -a
+     register: kernel
+   - debug:
+      msg: '{{kernel.stdout}}'
+#     var: kernel.stdout
+
+#case10
+   - name: using tags
+     tags: date
+     command: date
+     register: date
+   - debug:
+      msg: '{{date.stdout}}'
+#     var: date.stdout
+    ...

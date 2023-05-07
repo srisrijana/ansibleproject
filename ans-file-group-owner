@@ -1,0 +1,9 @@
+---
+ - name: create file and add data in file
+   hosts: srisri
+   tasks:
+   - name: create file
+     file: dest=/tmp/nagu state=touch mode=777 owner=nagu group=bat22a
+
+   - name: add data in file
+lineinfile: dest=/tmp/nagu line='THIS IS MY PERSONAL DATA'

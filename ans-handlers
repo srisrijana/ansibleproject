@@ -1,0 +1,10 @@
+---
+ - name: with handlers
+   hosts: ramana
+   tasks:
+   - name: copy file
+     copy: src=/etc/fstab dest=/var/www/html/index.html
+     notify: restart httpd service
+   handlers:
+   - name: restart httpd service
+     service: name=httpd state=restarted

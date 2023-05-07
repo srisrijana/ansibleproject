@@ -1,0 +1,13 @@
+---
+ - name: install,update and uninstall packages
+   hosts: ramana
+   tasks:
+   - name: install httpd package
+     yum: name=httpd state=present
+
+   - name: update httpd package
+     yum: name=httpd state=latest
+
+   - name: uninstall httpd package
+     yum: name=httpd state=absent
+     ...

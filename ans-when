@@ -1,0 +1,10 @@
+---
+ - name: with register and when
+   hosts: ramana
+   tasks:
+   - name: copy file
+     copy: src=/etc/fstab dest=/var/www/html/index.html
+     register: httpd
+   - name: httpd service
+     service: name=httpd state=restarted
+     when: httpd.changed
