@@ -1,0 +1,10 @@
+#!/bin/bash
+---
+ - name: srinivas
+   hosts: all
+   tasks: 
+     - name: "my task 1"
+       file: "dest= /tmp/jagan state=touch"
+       register: sri
+       debug: sri
+...
